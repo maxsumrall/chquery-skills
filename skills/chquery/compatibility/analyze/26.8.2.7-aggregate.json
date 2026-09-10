@@ -1,0 +1,69 @@
+{
+  "chquery": 1,
+  "created_at": "2026-09-09T15:19:43.391Z",
+  "clickhouse": { "version": "26.8.2.7" },
+  "source": {
+    "kind": "cli"
+  },
+  "sql": "SELECT id % 7 AS bucket, count() AS n FROM compat.events GROUP BY bucket ORDER BY bucket",
+  "explain": {
+    "plan": [
+      {
+        "Plan": {
+          "Node Type": "Expression",
+          "Node Id": "Expression_7",
+          "Description": "Project names",
+          "Plans": [
+            {
+              "Node Type": "Sorting",
+              "Node Id": "Sorting_6",
+              "Description": "Sorting for ORDER BY",
+              "Plans": [
+                {
+                  "Node Type": "Expression",
+                  "Node Id": "Expression_9",
+                  "Description": "(Before ORDER BY + Projection)",
+                  "Plans": [
+                    {
+                      "Node Type": "Aggregating",
+                      "Node Id": "Aggregating_3",
+                      "Plans": [
+                        {
+                          "Node Type": "Expression",
+                          "Node Id": "Expression_8",
+                          "Description": "(Before GROUP BY + Change column names to column identifiers)",
+                          "Plans": [
+                            {
+                              "Node Type": "ReadFromMergeTree",
+                              "Node Id": "ReadFromMergeTree_0",
+                              "Description": "compat.events",
+                              "Indexes": [
+                                {
+                                  "Type": "PrimaryKey",
+                                  "Condition": "true",
+                                  "Initial Parts": 1,
+                                  "Selected Parts": 1,
+                                  "Initial Granules": 8,
+                                  "Selected Granules": 8
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "analyze": {
+      "text": "Query summary:\n  Time:        1.84 ms (planning 1.41 ms · execution 422.89 us)\n  Read:        128.00 rows, 1.02 KB (302.68 thousand rows/s., 2.42 MB/s.)\n  Peak memory: 21.50 KiB\n\nOutput: id MOD 7, count()\n\nExpression (Project names)\n│  I/O: rows 7 → 7 · 63 B → 63 B\n│    time 831.00 ns (0.2%) · parallelism 0.90/1\n│      Time per processor (1): min 752.00 ns · median 752.00 ns · max 752.00 ns · sum 752.00 ns\n└──Sorting (Sorting for ORDER BY)\n   │  Sort description: id MOD 7 ASC\n   │  I/O: rows 7 → 7 · 63 B → 63 B\n   │    Stage (sorting): time 14.79 us (3.5%) · parallelism 0.97/1\n   │      Time per processor (3): min 357.00 ns · median 5.14 us · max 8.90 us · sum 14.39 us\n   └──Expression ((Before ORDER BY + Projection))\n      │  I/O: rows 7 → 7 · 63 B → 63 B\n      │    time 1.07 us (0.3%) · parallelism 0.93/1\n      │      Time per processor (1): min 988.00 ns · median 988.00 ns · max 988.00 ns · sum 988.00 ns\n      └──Aggregating\n         │  Keys: id MOD 7\n         │  Aggregates: count()\n         │  Skip merging: 0\n         │  I/O: rows 128 → 7 (5.47%) · 128 B → 63 B\n         │    Stage (partial aggregation): time 45.19 us (10.7%) · parallelism 1.00/1\n         │      Time per processor (1): min 45.01 us · median 45.01 us · max 45.01 us · sum 45.01 us\n         │    Stage (final aggregation): time 9.10 us (2.2%) · parallelism 0.98/1\n         │      Time per processor (1): min 8.94 us · median 8.94 us · max 8.94 us · sum 8.94 us\n         └──Expression ((Before GROUP BY + Change column names to column identifiers))\n            │  I/O: rows 128 → 128 · 1.02 KB → 128 B\n            │    time 5.42 us (1.3%) · parallelism 0.98/1\n            │      Time per processor (1): min 5.33 us · median 5.33 us · max 5.33 us · sum 5.33 us\n            └──ReadFromMergeTree (compat.events)\n                  Read type: Default\n                  Parts: 1 | Granules: 8\n                  Output: id\n                  Indexes:\n                    PrimaryKey\n                      Condition: true\n                      Parts: 1/1\n                      Granules: 8/8\n                    Ranges: 1\n                  I/O: rows 0 → 128 · 0 B → 1.02 KB\n                    time 195.42 us (46.2%) · parallelism 1.00/1\n                      Time per processor (1): min 195.19 us · median 195.19 us · max 195.19 us · sum 195.19 us\n",
+      "sql": "SELECT id % 7 AS bucket, count() AS n FROM compat.events GROUP BY bucket ORDER BY bucket",
+      "association": "collector_attested"
+    }
+  }
+}

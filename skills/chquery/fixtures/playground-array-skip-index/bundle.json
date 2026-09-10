@@ -1,0 +1,81 @@
+{
+  "chquery": 1,
+  "created_at": "2026-09-03T12:00:00Z",
+  "source": {
+    "kind": "agent-skill",
+    "tool": "ClickHouse Playground"
+  },
+  "clickhouse": {
+    "version": "26.9.1.52",
+    "cloud_mode": 1,
+    "cloud": true
+  },
+  "sql": "SELECT\n    col_1,\n    alias_1\nFROM db_1.table_1\nARRAY JOIN splitByChar('<str_1>', col_1) AS alias_1\nPREWHERE col_2 >= toDateTime('<str_2>')\n",
+  "explain": {
+    "plan": [
+      {
+        "Plan": {
+          "Node Type": "Expression",
+          "Node Id": "Expression_9",
+          "Description": "(Project names + Projection)",
+          "Plans": [
+            {
+              "Node Type": "ArrayJoin",
+              "Node Id": "ArrayJoin_4",
+              "Description": "ARRAY JOIN",
+              "Plans": [
+                {
+                  "Node Type": "Expression",
+                  "Node Id": "Expression_8",
+                  "Description": "(DROP unused columns before ARRAY JOIN + (ARRAY JOIN actions + Change column names to column identifiers))",
+                  "Plans": [
+                    {
+                      "Node Type": "ReadFromMergeTree",
+                      "Node Id": "ReadFromMergeTree_0",
+                      "Description": "db_1.table_1",
+                      "Indexes": [
+                        {
+                          "Type": "PrimaryKey",
+                          "Keys": [
+                            "col_2"
+                          ],
+                          "Condition": "(col_2 in [<num_1>, +Inf))",
+                          "Search Algorithm": "generic exclusion search",
+                          "Initial Parts": 3,
+                          "Selected Parts": 3,
+                          "Initial Granules": 12323,
+                          "Selected Granules": 12323
+                        },
+                        {
+                          "Type": "Skip",
+                          "Name": "col_3",
+                          "Description": "minmax GRANULARITY 1",
+                          "Condition": "(col_2 in [<num_1>, +Inf))",
+                          "Initial Parts": 3,
+                          "Selected Parts": 3,
+                          "Initial Granules": 12323,
+                          "Selected Granules": 12323
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "estimate": [
+      {
+        "database": "db_1",
+        "table": "table_1",
+        "parts": 3,
+        "rows": 99997497,
+        "marks": 12323
+      }
+    ],
+    "syntax": "SELECT\n    col_1,\n    alias_1\nFROM db_1.table_1\nARRAY JOIN splitByChar('<str_1>', col_1) AS alias_1\nPREWHERE greaterOrEquals(col_2, toDateTime('<str_2>'))\n",
+    "pipeline": "(Expression)\nExpressionTransform × 192\n  (ArrayJoin)\n  ArrayJoinTransform × 192\n    (Expression)\n    ExpressionTransform × 192\n      (ReadFromMergeTree)\n      MergeTreeSelect(pool: ReadPool, algorithm: Thread) × 192 0 → 1\n"
+  }
+}

@@ -1,0 +1,26 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate skill structure
+        run: npx --yes skills-ref validate skills/chquery
+      - name: Analyze the sample bundle
+        run: node skills/chquery/scripts/chquery.mjs analyze skills/chquery/examples/agent-bundle.json --format json
+      - name: Validate producer contracts
+        run: |
+          node skills/chquery/scripts/chquery-conformance.mjs validate skills/chquery/examples/agent-bundle.json
+          node skills/chquery/scripts/validate-producer-conformance.mjs

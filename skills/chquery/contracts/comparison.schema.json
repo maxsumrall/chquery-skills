@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chquery.com/contracts/comparison.schema.json",
+  "title": "CH Query comparison v1",
+  "type": "object",
+  "required": ["chquery_comparison", "baseline", "candidate"],
+  "properties": {
+    "chquery_comparison": { "const": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 240, "pattern": "\\S" },
+    "question": { "type": "string", "minLength": 1, "maxLength": 10000, "pattern": "\\S" },
+    "baseline": { "$ref": "#/$defs/slot" },
+    "candidate": { "$ref": "#/$defs/slot" },
+    "context": {
+      "type": "object",
+      "properties": {
+        "hypothesis": { "type": "string" },
+        "claims": { "type": "array", "maxItems": 50, "items": { "$ref": "#/$defs/claim" } }
+      },
+      "additionalProperties": true
+    },
+    "preparation": { "type": "object" }
+  },
+  "$defs": {
+    "slot": {
+      "type": "object",
+      "required": ["bundle"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1, "maxLength": 240, "pattern": "\\S" },
+        "bundle": { "$ref": "bundle.schema.json" }
+      },
+      "additionalProperties": true
+    },
+    "evidenceReference": {
+      "type": "object",
+      "required": ["role", "path"],
+      "properties": {
+        "role": { "enum": ["baseline", "candidate"] },
+        "path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "nodeId": { "type": "string", "minLength": 1, "maxLength": 240 }
+      },
+      "additionalProperties": true
+    },
+    "branchNode": {
+      "type": "object",
+      "required": ["path", "operator_type"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^\\$\\[[0-9]+\\]\\.Plan(?:\\.Plans\\[[0-9]+\\])*$" },
+        "operator_type": { "type": "string", "minLength": 1 },
+        "properties": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "claim": {
+      "type": "object",
+      "required": ["id", "statement", "check_type", "scope"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "\\S" },
+        "statement": { "type": "string", "minLength": 1, "maxLength": 10000, "pattern": "\\S" },
+        "check_type": { "enum": ["structural-chain-absence", "measurement-delta", "external-correctness"] },
+        "scope": { "type": "object" },
+        "evidence": { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/evidenceReference" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "check_type": { "const": "structural-chain-absence" } }, "required": ["check_type"] },
+          "then": {
+            "properties": {
+              "scope": {
+                "type": "object",
+                "required": ["baseline_anchor", "candidate_anchor", "baseline_chain"],
+                "properties": {
+                  "baseline_anchor": { "$ref": "#/$defs/branchNode" },
+                  "candidate_anchor": { "$ref": "#/$defs/branchNode" },
+                  "baseline_chain": { "type": "array", "minItems": 1, "maxItems": 100, "items": { "$ref": "#/$defs/branchNode" } }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "check_type": { "const": "measurement-delta" } }, "required": ["check_type"] },
+          "then": {
+            "properties": {
+              "scope": {
+                "type": "object",
+                "required": ["metric", "direction"],
+                "properties": {
+                  "metric": { "enum": ["query_duration_ms", "read_bytes", "read_rows", "memory_usage", "result_rows"] },
+                  "direction": { "enum": ["decrease", "increase", "unchanged"] },
+                  "percent": { "type": "number" },
+                  "tolerance": { "type": "number", "minimum": 0 }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "check_type": { "const": "external-correctness" } }, "required": ["check_type"] },
+          "then": {
+            "properties": {
+              "scope": {
+                "type": "object",
+                "required": ["expected"],
+                "properties": { "expected": { "enum": ["equivalent", "different"] } },
+                "additionalProperties": true
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

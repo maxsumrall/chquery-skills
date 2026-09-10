@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chquery.com/contracts/capabilities.schema.json",
+  "title": "CH Query capabilities v1",
+  "type": "object",
+  "required": ["chquery_capabilities", "tool", "runtime", "contracts", "commands", "collectionProfiles", "transports", "optionalEvidenceStates", "privacyPreparation", "limits"],
+  "properties": {
+    "chquery_capabilities": { "const": 1 },
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "chquery" },
+        "version": { "type": "string", "minLength": 1 },
+        "build": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "runtime": {
+      "type": "object",
+      "required": ["node", "dependencies"],
+      "properties": {
+        "node": { "type": "string" },
+        "dependencies": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "contracts": { "type": "object" },
+    "commands": { "type": "object" },
+    "collectionProfiles": { "type": "object" },
+    "transports": { "type": "array" },
+    "optionalEvidenceStates": { "type": "array" },
+    "privacyPreparation": {
+      "type": "object",
+      "required": ["contractVersion", "identifiers", "redact", "outgoingBytes"],
+      "properties": {
+        "contractVersion": { "type": "integer", "minimum": 1 },
+        "identifiers": { "const": ["retain", "pseudonymize"] },
+        "redact": { "const": [true, false] },
+        "outgoingBytes": { "const": "canonical-prepared-json" }
+      },
+      "additionalProperties": false
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "temporaryHandoff": {
+          "type": "object",
+          "required": ["plaintextBytes", "ciphertextBytes", "invitationSeconds", "grantSeconds", "temporaryRetentionSeconds", "manifestBytes", "maxDeflateOverheadBytes", "encryptionFramingBytes"],
+          "properties": {
+            "plaintextBytes": { "type": "integer", "minimum": 1 },
+            "ciphertextBytes": { "type": "integer", "minimum": 1 },
+            "invitationSeconds": { "type": "integer", "minimum": 1 },
+            "grantSeconds": { "type": "integer", "minimum": 1 },
+            "temporaryRetentionSeconds": { "type": "integer", "minimum": 1 },
+            "manifestBytes": { "type": "integer", "minimum": 1 },
+            "maxDeflateOverheadBytes": { "type": "integer", "minimum": 0 },
+            "encryptionFramingBytes": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "storedShare": {
+          "type": "object",
+          "required": ["plaintextBytes", "ciphertextBytes", "retentionSeconds"],
+          "properties": {
+            "plaintextBytes": { "type": "integer", "minimum": 1 },
+            "ciphertextBytes": { "type": "integer", "minimum": 1 },
+            "retentionSeconds": { "type": "integer", "minimum": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

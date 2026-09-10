@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chquery.com/contracts/bundle.schema.json",
+  "title": "CH Query evidence bundle v1",
+  "type": "object",
+  "required": ["chquery", "sql", "explain"],
+  "properties": {
+    "chquery": { "const": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 240, "pattern": "\\S" },
+    "question": { "type": "string", "minLength": 1, "maxLength": 10000, "pattern": "\\S" },
+    "sql": { "type": "string", "minLength": 1 },
+    "explain": {
+      "type": "object",
+      "required": ["plan"],
+      "properties": {
+        "plan": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["Plan"],
+            "properties": { "Plan": { "$ref": "#/$defs/planNode" } },
+            "additionalProperties": true
+          }
+        },
+        "estimate": { "type": "array", "items": { "type": "object" } },
+        "pipeline": { "type": "string" },
+        "analyze": {
+          "type": "object",
+          "required": ["text", "sql", "association"],
+          "properties": {
+            "text": { "type": "string", "minLength": 1, "maxLength": 2097152, "pattern": "\\S" },
+            "sql": { "type": "string", "minLength": 1, "pattern": "\\S" },
+            "association": { "enum": ["user_attested", "collector_attested"] }
+          },
+          "additionalProperties": true
+        },
+        "syntax": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "source": { "type": "object" },
+    "clickhouse": { "type": "object" },
+    "settings": { "type": "object" },
+    "schema": { "type": "array" },
+    "runtime": { "type": "object" },
+    "redaction": { "type": "object" }
+  },
+  "$defs": {
+    "planNode": {
+      "type": "object",
+      "required": ["Node Type"],
+      "properties": {
+        "Node Type": { "type": "string" },
+        "Description": { "type": ["string", "null"] },
+        "Plans": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/planNode" }
+        },
+        "Indexes": { "type": "array", "items": { "type": "object" } }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

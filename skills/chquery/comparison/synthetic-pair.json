@@ -1,0 +1,28 @@
+{
+  "chquery_comparison": 1,
+  "context": { "hypothesis": "Synthetic contract fixture, not a measured optimization case study." },
+  "baseline": {
+    "label": "Baseline",
+    "bundle": {
+      "chquery": 1,
+      "sql": "SELECT id FROM demo.events WHERE id > 1",
+      "explain": {
+        "plan": [{ "Plan": { "Node Type": "ReadFromMergeTree", "Description": "demo.events", "Indexes": [{ "Type": "PrimaryKey", "Condition": "true", "Keys": ["id"], "Initial Granules": 100, "Selected Granules": 100 }] } }],
+        "estimate": [{ "database": "demo", "table": "events", "rows": "10000", "parts": "10", "marks": "100" }]
+      },
+      "runtime": { "query_log": { "query_duration_ms": 120, "read_bytes": 1000, "read_rows": 100, "memory_usage": 4096, "result_rows": 10 } }
+    }
+  },
+  "candidate": {
+    "label": "Candidate",
+    "bundle": {
+      "chquery": 1,
+      "sql": "SELECT id FROM demo.events WHERE id > 2",
+      "explain": {
+        "plan": [{ "Plan": { "Node Type": "Expression", "Plans": [{ "Node Type": "ReadFromMergeTree", "Description": "demo.events", "Indexes": [{ "Type": "PrimaryKey", "Condition": "id > 2", "Keys": ["id"], "Initial Granules": 100, "Selected Granules": 20 }] }] } }],
+        "estimate": [{ "database": "demo", "table": "events", "rows": "2000", "parts": "2", "marks": "20" }]
+      },
+      "runtime": { "query_log": { "query_duration_ms": 100, "read_bytes": 200, "read_rows": 20, "memory_usage": 8192, "result_rows": 10 } }
+    }
+  }
+}

@@ -1,0 +1,2 @@
+{"database":"d,b","table":"таблица","rows":"1"}
+{"database":"other","table":"events","rows":"0"}

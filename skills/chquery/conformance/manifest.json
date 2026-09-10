@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "clickhouse-26-9-playground-array-index",
+      "kind": "artifact",
+      "provenance": "sanitized-genuine",
+      "caseStudy": false,
+      "clickhouseVersion": "26.9.1.52",
+      "path": "../fixtures/playground-array-skip-index/bundle.json",
+      "facts": { "roots": 1, "nodes": 4 },
+      "expect": "accept"
+    },
+    {
+      "id": "clickhouse-26-3-lts-raw-plan",
+      "kind": "transport",
+      "provenance": "genuine",
+      "caseStudy": false,
+      "clickhouseVersion": "26.3.31.5",
+      "transport": "object",
+      "path": "../compatibility/26.3.31.5-lts/plan.json",
+      "canonical": "../compatibility/26.3.31.5-lts/plan.json",
+      "facts": { "roots": 1, "nodes": 5 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "clickhouse-26-7-stable-raw-plan",
+      "kind": "transport",
+      "provenance": "genuine",
+      "caseStudy": false,
+      "clickhouseVersion": "26.7.6.57",
+      "transport": "object",
+      "path": "../compatibility/26.7.6.57-stable/plan.json",
+      "canonical": "../compatibility/26.7.6.57-stable/plan.json",
+      "facts": { "roots": 1, "nodes": 5 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "clickhouse-26-8-lts-raw-plan",
+      "kind": "transport",
+      "provenance": "genuine",
+      "caseStudy": false,
+      "clickhouseVersion": "26.8.2.7",
+      "transport": "object",
+      "path": "../compatibility/26.8.2.7-lts/plan.json",
+      "canonical": "../compatibility/26.8.2.7-lts/plan.json",
+      "facts": { "roots": 1, "nodes": 5 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "synthetic-comparison-workload",
+      "kind": "artifact",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "path": "../comparison/synthetic-pair.json",
+      "expect": "accept"
+    },
+    {
+      "id": "synthetic-scoped-review-contract-family",
+      "kind": "artifact",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "path": "../comparison/review-pair-family.json",
+      "expect": "accept"
+    },
+    {
+      "id": "raw-plan-array",
+      "kind": "transport",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "object",
+      "path": "transports/raw-plan.json",
+      "canonical": "transports/canonical-plan.json",
+      "facts": { "roots": 1, "nodes": 2 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "mcp-text-content",
+      "kind": "transport",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "json",
+      "path": "transports/mcp-text.json",
+      "canonical": "transports/canonical-plan.json",
+      "facts": { "roots": 1, "nodes": 2 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "mcp-duplicate-structured-content",
+      "kind": "transport",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "mcp-structured",
+      "path": "transports/mcp-duplicate.json",
+      "canonical": "transports/canonical-plan.json",
+      "facts": { "roots": 1, "nodes": 2 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "complete-json-code-fence",
+      "kind": "transport",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "json",
+      "path": "transports/code-fence.txt",
+      "canonical": "transports/canonical-plan.json",
+      "facts": { "roots": 1, "nodes": 2 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "rows-json-array",
+      "kind": "transport",
+      "evidenceKind": "rows",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "object",
+      "path": "transports/canonical-rows.json",
+      "canonical": "transports/canonical-rows.json",
+      "facts": { "roots": 0, "nodes": 0 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "rows-json-each-row",
+      "kind": "transport",
+      "evidenceKind": "rows",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "json-each-row",
+      "path": "transports/rows-json-each-row.txt",
+      "canonical": "transports/canonical-json-each-rows.json",
+      "facts": { "roots": 0, "nodes": 0 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "rows-clickhouse-json-compact",
+      "kind": "transport",
+      "evidenceKind": "rows",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "clickhouse-json-compact",
+      "path": "transports/rows-json-compact.json",
+      "canonical": "transports/canonical-rows.json",
+      "facts": { "roots": 0, "nodes": 0 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "rows-columns-rows",
+      "kind": "transport",
+      "evidenceKind": "rows",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "columns-rows",
+      "path": "transports/rows-columns.json",
+      "canonical": "transports/canonical-rows.json",
+      "facts": { "roots": 0, "nodes": 0 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "rows-rfc4180-csv",
+      "kind": "transport",
+      "evidenceKind": "rows",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "csv",
+      "path": "transports/rows.csv",
+      "canonical": "transports/canonical-rows.json",
+      "facts": { "roots": 0, "nodes": 0 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "rows-clickhouse-tsv",
+      "kind": "transport",
+      "evidenceKind": "rows",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "tsv",
+      "path": "transports/rows.tsv",
+      "canonical": "transports/canonical-rows.json",
+      "facts": { "roots": 0, "nodes": 0 },
+      "expect": "equivalent"
+    },
+    {
+      "id": "conflicting-distinct-plans",
+      "kind": "transport",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "mcp-structured",
+      "path": "negative/ambiguous-mcp.json",
+      "expect": "reject",
+      "code": "ambiguous_candidates"
+    },
+    {
+      "id": "truncated-plan",
+      "kind": "transport",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "clickhouse-json",
+      "path": "negative/truncated.json",
+      "expect": "reject",
+      "code": "truncated"
+    },
+    {
+      "id": "path-is-data-not-authority",
+      "kind": "transport",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "mcp-text",
+      "path": "negative/untrusted-path.json",
+      "expect": "reject",
+      "code": "malformed"
+    },
+    {
+      "id": "executable-source-is-data",
+      "kind": "transport",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "mcp-text",
+      "path": "negative/untrusted-code.json",
+      "expect": "reject",
+      "code": "malformed"
+    },
+    {
+      "id": "malformed-rfc4180-row-boundary",
+      "kind": "transport",
+      "evidenceKind": "rows",
+      "provenance": "synthetic",
+      "caseStudy": false,
+      "transport": "csv",
+      "path": "negative/malformed.csv",
+      "expect": "reject",
+      "code": "invalid_shape"
+    }
+  ]
+}

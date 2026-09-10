@@ -1,0 +1,115 @@
+{
+  "chquery": 1,
+  "created_at": "2026-09-09T15:19:12.653Z",
+  "clickhouse": { "version": "26.7.6.57" },
+  "source": {
+    "kind": "cli"
+  },
+  "sql": "SELECT e.id, d.label FROM compat.events AS e INNER JOIN compat.dim AS d ON e.id % 4 = d.k WHERE e.id < 8 ORDER BY e.id, d.label",
+  "explain": {
+    "plan": [
+      {
+        "Plan": {
+          "Node Type": "Expression",
+          "Node Id": "Expression_9",
+          "Description": "Project names",
+          "Plans": [
+            {
+              "Node Type": "Sorting",
+              "Node Id": "Sorting_8",
+              "Description": "Sorting for ORDER BY",
+              "Plans": [
+                {
+                  "Node Type": "Expression",
+                  "Node Id": "Expression_23",
+                  "Plans": [
+                    {
+                      "Node Type": "Join",
+                      "Node Id": "Join_21",
+                      "Description": "JOIN FillRightFirst",
+                      "Plans": [
+                        {
+                          "Node Type": "Expression",
+                          "Node Id": "Expression_19",
+                          "Description": "Left Pre Join Actions",
+                          "Plans": [
+                            {
+                              "Node Type": "Filter",
+                              "Node Id": "Filter_25",
+                              "Plans": [
+                                {
+                                  "Node Type": "ReadFromMergeTree",
+                                  "Node Id": "ReadFromMergeTree_0",
+                                  "Description": "compat.events",
+                                  "Indexes": [
+                                    {
+                                      "Type": "PrimaryKey",
+                                      "Keys": [
+                                        "id"
+                                      ],
+                                      "Condition": "(id in (-Inf, 7])",
+                                      "Search Algorithm": "binary search",
+                                      "Initial Parts": 1,
+                                      "Selected Parts": 1,
+                                      "Initial Granules": 8,
+                                      "Selected Granules": 1
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "Node Type": "Expression",
+                          "Node Id": "Expression_20",
+                          "Description": "Right Pre Join Actions",
+                          "Plans": [
+                            {
+                              "Node Type": "BuildRuntimeFilter",
+                              "Node Id": "BuildRuntimeFilter_17",
+                              "Description": "Build runtime join filter on __table2.k",
+                              "Plans": [
+                                {
+                                  "Node Type": "Expression",
+                                  "Node Id": "Expression_3",
+                                  "Description": "Change column names to column identifiers",
+                                  "Plans": [
+                                    {
+                                      "Node Type": "ReadFromMergeTree",
+                                      "Node Id": "ReadFromMergeTree_2",
+                                      "Description": "compat.dim",
+                                      "Indexes": [
+                                        {
+                                          "Type": "PrimaryKey",
+                                          "Condition": "true",
+                                          "Initial Parts": 1,
+                                          "Selected Parts": 1,
+                                          "Initial Granules": 1,
+                                          "Selected Granules": 1
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "analyze": {
+      "text": "Query summary:\n  Time:        2.49 ms (planning 1.79 ms · execution 701.94 us)\n  Read:        19.00 rows, 158.00 B (27.07 thousand rows/s., 225.09 KB/s.)\n  Peak memory: 26.99 KiB\n\nOutput: id, label\n\nExpression (Project names)\n│  I/O: rows 6 → 6 · 102 B → 102 B\n│    time 1.02 us (0.1%) · parallelism 0.92/1\n│      Time per processor (1): min 941.00 ns · median 941.00 ns · max 941.00 ns · sum 941.00 ns\n└──Sorting (Sorting for ORDER BY)\n   │  Sort description: id ASC, label ASC\n   │  I/O: rows 6 → 6 · 102 B → 102 B\n   │    time 17.64 us (2.5%) · parallelism 0.97/1\n   │      Time per processor (3): min 553.00 ns · median 7.74 us · max 8.87 us · sum 17.16 us\n   └──Expression\n      │  I/O: rows 6 → 6 · 102 B → 102 B\n      │    time 1.66 us (0.2%) · parallelism 0.94/1\n      │      Time per processor (1): min 1.56 us · median 1.56 us · max 1.56 us · sum 1.56 us\n      └──Join (JOIN FillRightFirst)\n         │  e[16] ⋈ d[3]\n         │  Type: inner | Strictness: all | Algorithm: SpillingHashJoin(HashJoin)\n         │  Result rows: 3\n         │  Join conditions: CAST(id MOD 4 AS UInt64) = k\n         │  Output:\n         │    Left:  id\n         │    Right: label\n         │  I/O: rows 7 → 6 (85.71%) · 119 B → 102 B\n         │    Stage (probe): time 133.22 us (19.0%) · parallelism 0.99/1\n         │      Time per processor (4): min 452.00 ns · median 4.66 us · max 122.73 us · sum 132.51 us\n         │    Stage (build): time 17.25 us (2.5%) · parallelism 0.99/1\n         │      Time per processor (1): min 17.09 us · median 17.09 us · max 17.09 us · sum 17.09 us\n         ├──Expression (Left Pre Join Actions)\n         │  │  I/O: rows 4 → 4 · 36 B → 68 B\n         │  │    time 3.53 us (0.5%) · parallelism 0.97/1\n         │  │      Time per processor (1): min 3.41 us · median 3.41 us · max 3.41 us · sum 3.41 us\n         │  └──Filter\n         │     │  Filter column: id < 8 AND RF1(_CAST(modulo(id, 4_UInt8), 'UInt64'_String), k from compat.dim)\n         │     │  I/O: rows 16 → 4 (25.00%) · 128 B → 36 B\n         │     │    time 50.03 us (7.1%) · parallelism 1.00/1\n         │     │      Time per processor (2): min 8.74 us · median 24.90 us · max 41.06 us · sum 49.80 us\n         │     └──ReadFromMergeTree (compat.events)\n         │           Read type: Default\n         │           Parts: 1 | Granules: 1\n         │           Output: id\n         │           Indexes:\n         │             PrimaryKey\n         │               Keys:\n         │                 id\n         │               Condition: (id in (-Inf, 7])\n         │               Parts: 1/1\n         │               Granules: 1/8\n         │               Search Algorithm: binary search\n         │             Ranges: 1\n         │           I/O: rows 0 → 16 · 0 B → 128 B\n         │             time 50.15 us (7.1%) · parallelism 1.00/1\n         │               Time per processor (1): min 49.92 us · median 49.92 us · max 49.92 us · sum 49.92 us\n         └──Expression (Right Pre Join Actions)\n            │  I/O: rows 3 → 3 · 51 B → 51 B\n            │    time 518.00 ns (0.1%) · parallelism 0.85/1\n            │      Time per processor (1): min 439.00 ns · median 439.00 ns · max 439.00 ns · sum 439.00 ns\n            └──BuildRuntimeFilter (Build runtime join filter on k)\n               │  Filter id: RF1\n               │  Source table: compat.dim\n               │  I/O: rows 3 → 3 · 51 B → 51 B\n               │    time 5.28 us (0.8%) · parallelism 0.98/1\n               │      Time per processor (1): min 5.20 us · median 5.20 us · max 5.20 us · sum 5.20 us\n               └──Expression (Change column names to column identifiers)\n                  │  I/O: rows 3 → 3 · 51 B → 51 B\n                  │    time 2.14 us (0.3%) · parallelism 0.96/1\n                  │      Time per processor (1): min 2.05 us · median 2.05 us · max 2.05 us · sum 2.05 us\n                  └──ReadFromMergeTree (compat.dim)\n                        Read type: Default\n                        Parts: 1 | Granules: 1\n                        Output: label, k\n                        Indexes:\n                          PrimaryKey\n                            Condition: true\n                            Parts: 1/1\n                            Granules: 1/1\n                          Ranges: 1\n                        I/O: rows 0 → 3 · 0 B → 51 B\n                          time 141.73 us (20.2%) · parallelism 1.00/1\n                            Time per processor (1): min 141.51 us · median 141.51 us · max 141.51 us · sum 141.51 us\n",
+      "sql": "SELECT e.id, d.label FROM compat.events AS e INNER JOIN compat.dim AS d ON e.id % 4 = d.k WHERE e.id < 8 ORDER BY e.id, d.label",
+      "association": "collector_attested"
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "allow_experimental_analyzer": {
+    "affects": ["Plan node", "Join", "Aggregation", "Sort", "Table scan"],
+    "direction": "Enables the analyzer and planner used to build query plans.",
+    "when_to_suggest": "When an older profile still disables the analyzer and the plan misses analyzer-only optimizations.",
+    "cloud": "both",
+    "note": "Legacy name; enable_analyzer is its current alias."
+  },
+  "allow_experimental_parallel_reading_from_replicas": {
+    "affects": ["Table scan"],
+    "direction": "Allows a SELECT to split MergeTree reads across replicas.",
+    "when_to_suggest": "For large scans on replicated data after checking replica topology and query compatibility.",
+    "cloud": "only",
+    "note": "Legacy experimental control; current releases use enable_parallel_replicas and related parallel_replicas settings."
+  },
+  "enable_analyzer": {
+    "affects": ["Plan node", "Join", "Aggregation", "Sort", "Table scan"],
+    "direction": "Enables the analyzer and planner used to build query plans.",
+    "when_to_suggest": "When a profile disables it and the query depends on analyzer-only planning or optimization.",
+    "cloud": "both",
+    "note": "Alias of allow_experimental_analyzer retained under the non-experimental name."
+  },
+  "enable_filesystem_cache": {
+    "affects": ["Table scan"],
+    "direction": "Caches data read from remote filesystems.",
+    "when_to_suggest": "For repeated object-storage reads where the service and storage policy expose a filesystem cache.",
+    "cloud": "only",
+    "note": "Relevant to remote/object-storage scans; cache availability and sizing are service controlled."
+  },
+  "join_algorithm": {
+    "affects": ["Join"],
+    "direction": "Chooses one or more JOIN implementations with different memory, sorting, and spill behavior.",
+    "when_to_suggest": "When a JOIN is the bottleneck and its shape, key types, and memory evidence support testing another documented algorithm.",
+    "cloud": "both",
+    "note": "Algorithm order is preference order; not every algorithm supports every JOIN shape."
+  },
+  "max_bytes_before_external_group_by": {
+    "affects": ["Aggregation"],
+    "direction": "Starts external aggregation after the operation reaches the byte threshold; zero disables this absolute threshold.",
+    "when_to_suggest": "When GROUP BY memory pressure is observed and temporary storage can absorb spill I/O.",
+    "cloud": "both",
+    "note": "Cloud defaults this to half the memory per replica; test spill cost rather than assuming lower is faster."
+  },
+  "max_bytes_before_external_sort": {
+    "affects": ["Sort"],
+    "direction": "Starts external sorting after the operation reaches the byte threshold; zero disables external sorting.",
+    "when_to_suggest": "When ORDER BY memory pressure is observed and temporary storage can absorb spill I/O.",
+    "cloud": "both",
+    "note": "Cloud defaults this to half the memory per replica; spilling trades memory for I/O."
+  },
+  "max_memory_usage": {
+    "affects": ["Plan node", "Join", "Aggregation", "Sort", "Table scan"],
+    "direction": "Limits RAM used by one query on one server; zero means unlimited.",
+    "when_to_suggest": "When measured query memory approaches the limit; account for user and server limits too.",
+    "cloud": "both",
+    "note": "The Cloud default depends on replica RAM, so do not infer a safe value from the plan alone."
+  },
+  "max_parallel_replicas": {
+    "affects": ["Table scan"],
+    "direction": "Caps replicas used for parallel query execution.",
+    "when_to_suggest": "For a large Cloud scan after confirming parallel replicas are enabled and applicable.",
+    "cloud": "only",
+    "note": "A value greater than one can distribute eligible scans across replicas."
+  },
+  "max_threads": {
+    "affects": ["Table scan", "Aggregation", "Sort", "Join"],
+    "direction": "Caps parallel query-processing threads; lower values generally reduce memory use.",
+    "when_to_suggest": "On self-hosted servers when CPU and memory measurements show that query parallelism is mis-sized.",
+    "cloud": "hide",
+    "note": "ClickHouse Cloud derives auto(N) from service vCPUs; service sizing, not a cache-path-style tweak, owns this limit."
+  },
+  "optimize_move_to_prewhere": {
+    "affects": ["Table scan"],
+    "direction": "Moves eligible WHERE predicates to PREWHERE for MergeTree reads.",
+    "when_to_suggest": "When a selective scan-local predicate remains in WHERE and EXPLAIN SYNTAX shows no PREWHERE.",
+    "cloud": "both",
+    "note": "Only applies to MergeTree-family tables."
+  },
+  "optimize_read_in_order": {
+    "affects": ["Table scan", "Sort"],
+    "direction": "Allows MergeTree data to be read in primary-key order for compatible ORDER BY queries.",
+    "when_to_suggest": "When an ORDER BY matches table order but the plan still performs a separate sort.",
+    "cloud": "both",
+    "note": "Whether it applies depends on the ORDER BY expression and table sorting key."
+  },
+  "parallel_replicas_*": {
+    "affects": ["Table scan", "Aggregation"],
+    "direction": "Controls planning, coordination, filtering, and read-task behavior for parallel replicas.",
+    "when_to_suggest": "For large Cloud scans after checking that the specific setting applies to the table engine and query shape.",
+    "cloud": "only",
+    "note": "Treat the family as coordinated controls, not independent speed switches."
+  },
+  "query_plan_*": {
+    "affects": ["Plan node", "Join", "Aggregation", "Sort", "Table scan"],
+    "direction": "Controls named query-plan transformations and their limits.",
+    "when_to_suggest": "Only when the setting name and plan shape identify the same transformation and EXPLAIN can verify the effect.",
+    "cloud": "both",
+    "note": "Each query_plan setting is narrow; use its catalog description before changing it."
+  },
+  "use_query_condition_cache": {
+    "affects": ["Table scan"],
+    "direction": "Caches query conditions so repeated filters can skip granules on later runs.",
+    "when_to_suggest": "For recurring selective filters on MergeTree data, not a one-off full scan.",
+    "cloud": "both",
+    "note": "The cache helps repeated conditions and does not replace primary-key alignment."
+  },
+  "use_uncompressed_cache": {
+    "affects": ["Table scan"],
+    "direction": "Uses the uncompressed-block cache for repeated short MergeTree queries.",
+    "when_to_suggest": "On self-hosted deployments with many repeated short reads and an intentionally sized server cache.",
+    "cloud": "hide",
+    "note": "Large reads bypass it automatically; server-side cache sizing is separate."
+  }
+}

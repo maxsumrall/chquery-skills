@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chquery.com/contracts/investigation.schema.json",
+  "title": "CH Query portable investigation v1",
+  "type": "object",
+  "required": ["chquery_investigation", "title", "problem", "evidence"],
+  "properties": {
+    "chquery_investigation": { "const": 1 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "problem": { "type": "string", "maxLength": 16384 },
+    "notes": { "type": "string", "maxLength": 65536 },
+    "proposedExperiment": { "type": "string", "maxLength": 16384 },
+    "evidence": {
+      "oneOf": [
+        { "$ref": "bundle.schema.json" },
+        { "$ref": "comparison.schema.json" }
+      ]
+    },
+    "preparation": { "type": "object" }
+  },
+  "additionalProperties": false
+}

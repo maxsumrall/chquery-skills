@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chquery.com/contracts/ci-review.schema.json",
+  "title": "CH Query deterministic CI review v1",
+  "type": "object",
+  "required": ["chquery_ci_review", "analysisRevision", "comparisonRevision", "labels", "claims", "supportingReferences", "gaps", "summary"],
+  "properties": {
+    "chquery_ci_review": { "const": 1 },
+    "analysisRevision": { "type": "string" },
+    "comparisonRevision": { "type": "string" },
+    "labels": {
+      "type": "object",
+      "required": ["baseline", "candidate"],
+      "properties": { "baseline": { "type": "string" }, "candidate": { "type": "string" } },
+      "additionalProperties": false
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["authorClaim", "checkType", "assessment", "evidence", "missingEvidence", "reason"],
+        "properties": {
+          "authorClaim": { "$ref": "comparison.schema.json#/$defs/claim" },
+          "checkType": { "enum": ["structural-chain-absence", "measurement-delta", "external-correctness"] },
+          "assessment": { "enum": ["Supported", "Contradicted", "Not assessable"] },
+          "structuralScope": { "type": "object" },
+          "evidence": { "type": "array", "items": { "$ref": "comparison.schema.json#/$defs/evidenceReference" } },
+          "missingEvidence": { "type": "array", "items": { "type": "string" } },
+          "reason": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "supportingReferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "kind"],
+        "properties": {
+          "role": { "enum": ["baseline", "candidate"] },
+          "kind": { "enum": ["node", "setting"] },
+          "nodeId": { "type": "string" },
+          "nodeType": { "type": "string" },
+          "table": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "gaps": { "type": "array", "items": { "type": "string" } },
+    "summary": { "type": "object" }
+  },
+  "additionalProperties": false
+}

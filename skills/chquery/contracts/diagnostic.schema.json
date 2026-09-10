@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chquery.com/contracts/diagnostic.schema.json",
+  "title": "CH Query producer diagnostic v1",
+  "type": "object",
+  "required": ["severity", "path", "code", "message", "action"],
+  "properties": {
+    "severity": { "const": "error" },
+    "path": { "type": "string" },
+    "code": { "type": "string", "minLength": 1 },
+    "message": { "type": "string", "minLength": 1 },
+    "action": { "type": "string", "minLength": 1 },
+    "details": { "type": "object" }
+  },
+  "additionalProperties": false
+}

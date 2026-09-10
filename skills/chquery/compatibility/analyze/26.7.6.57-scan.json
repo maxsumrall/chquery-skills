@@ -1,0 +1,67 @@
+{
+  "chquery": 1,
+  "created_at": "2026-09-09T15:19:12.627Z",
+  "clickhouse": { "version": "26.7.6.57" },
+  "source": {
+    "kind": "cli"
+  },
+  "sql": "SELECT id, value FROM compat.events WHERE id >= 32 AND id < 64 ORDER BY id",
+  "explain": {
+    "plan": [
+      {
+        "Plan": {
+          "Node Type": "Expression",
+          "Node Id": "Expression_6",
+          "Description": "Project names",
+          "Plans": [
+            {
+              "Node Type": "Sorting",
+              "Node Id": "Sorting_5",
+              "Description": "Sorting for ORDER BY",
+              "Plans": [
+                {
+                  "Node Type": "Expression",
+                  "Node Id": "Expression_8",
+                  "Description": "(Before ORDER BY + Projection)",
+                  "Plans": [
+                    {
+                      "Node Type": "Expression",
+                      "Node Id": "Expression_9",
+                      "Description": "(WHERE + Change column names to column identifiers)",
+                      "Plans": [
+                        {
+                          "Node Type": "ReadFromMergeTree",
+                          "Node Id": "ReadFromMergeTree_0",
+                          "Description": "compat.events",
+                          "Indexes": [
+                            {
+                              "Type": "PrimaryKey",
+                              "Keys": [
+                                "id"
+                              ],
+                              "Condition": "and((id in (-Inf, 63]), (id in [32, +Inf)))",
+                              "Search Algorithm": "binary search",
+                              "Initial Parts": 1,
+                              "Selected Parts": 1,
+                              "Initial Granules": 8,
+                              "Selected Granules": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "analyze": {
+      "text": "Query summary:\n  Time:        1.33 ms (planning 1.06 ms · execution 265.28 us)\n  Read:        48.00 rows, 1.06 KB (180.94 thousand rows/s., 3.98 MB/s.)\n  Peak memory: 112.00 B\n\nOutput: id, value\n\nExpression (Project names)\n│  I/O: rows 32 → 32 · 896 B → 896 B\n│    time 607.00 ns (0.2%) · parallelism 0.87/1\n│      Time per processor (1): min 531.00 ns · median 531.00 ns · max 531.00 ns · sum 531.00 ns\n└──Sorting (Sorting for ORDER BY)\n   │  Prefix sort description: id ASC\n   │  Result sort description: id ASC\n   │  I/O: rows 32 → 32 · 896 B → 896 B\n   │    time 894.00 ns (0.3%) · parallelism 0.91/1\n   │      Time per processor (1): min 811.00 ns · median 811.00 ns · max 811.00 ns · sum 811.00 ns\n   └──Expression ((Before ORDER BY + Projection))\n      │  I/O: rows 32 → 32 · 896 B → 896 B\n      │    time 521.00 ns (0.2%) · parallelism 0.85/1\n      │      Time per processor (1): min 445.00 ns · median 445.00 ns · max 445.00 ns · sum 445.00 ns\n      └──Expression ((WHERE + Change column names to column identifiers))\n         │  I/O: rows 32 → 32 · 896 B → 896 B\n         │    time 1.51 us (0.6%) · parallelism 0.94/1\n         │      Time per processor (1): min 1.42 us · median 1.42 us · max 1.42 us · sum 1.42 us\n         └──ReadFromMergeTree (compat.events)\n               Read type: InOrder\n               Parts: 1 | Granules: 3\n               Output: id, value\n               Prewhere filter\n               Prewhere filter column:  id < 64 AND id >= 32\n               Indexes:\n                 PrimaryKey\n                   Keys:\n                     id\n                   Condition: and((id in (-Inf, 63]), (id in [32, +Inf)))\n                   Parts: 1/1\n                   Granules: 3/8\n                   Search Algorithm: binary search\n                 Ranges: 1\n               I/O: rows 0 → 32 · 0 B → 896 B\n                 time 156.00 us (58.8%) · parallelism 1.00/1\n                   Time per processor (1): min 155.78 us · median 155.78 us · max 155.78 us · sum 155.78 us\n",
+      "sql": "SELECT id, value FROM compat.events WHERE id >= 32 AND id < 64 ORDER BY id",
+      "association": "collector_attested"
+    }
+  }
+}
