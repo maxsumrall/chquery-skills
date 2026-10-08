@@ -1,0 +1,4 @@
+{
+  "columns": ["database", "table", "rows"],
+  "rows": [["d,b", "таблица", "1"]]
+}

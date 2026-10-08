@@ -1,0 +1,10 @@
+[
+  {
+    "name": "use_query_condition_cache",
+    "value": "1"
+  },
+  {
+    "name": "use_skip_indexes_on_data_read",
+    "value": "1"
+  }
+]

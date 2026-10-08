@@ -1,0 +1,49 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Expression",
+      "Node Id": "Expression_6",
+      "Description": "Project names",
+      "Plans": [
+        {
+          "Node Type": "Sorting",
+          "Node Id": "Sorting_5",
+          "Description": "Sorting for ORDER BY",
+          "Plans": [
+            {
+              "Node Type": "Expression",
+              "Node Id": "Expression_8",
+              "Description": "(Before ORDER BY + Projection)",
+              "Plans": [
+                {
+                  "Node Type": "Expression",
+                  "Node Id": "Expression_9",
+                  "Description": "(WHERE + Change column names to column identifiers)",
+                  "Plans": [
+                    {
+                      "Node Type": "ReadFromMergeTree",
+                      "Node Id": "ReadFromMergeTree_0",
+                      "Description": "compat.events",
+                      "Indexes": [
+                        {
+                          "Type": "PrimaryKey",
+                          "Keys": ["id"],
+                          "Condition": "and((id in (-Inf, 63]), (id in [32, +Inf)))",
+                          "Search Algorithm": "binary search",
+                          "Initial Parts": 1,
+                          "Selected Parts": 1,
+                          "Initial Granules": 8,
+                          "Selected Granules": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

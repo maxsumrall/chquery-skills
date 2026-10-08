@@ -1,0 +1,8 @@
+{
+  "meta": [
+    { "name": "database" },
+    { "name": "table" },
+    { "name": "rows" }
+  ],
+  "data": [["d,b", "таблица", "1"]]
+}

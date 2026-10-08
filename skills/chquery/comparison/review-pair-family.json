@@ -1,0 +1,99 @@
+{
+  "fixture_kind": "synthetic-contract-family",
+  "notice": "Synthetic W3/W8 contract evidence. Not the reported PR, a benchmark, or a correctness validation.",
+    "chquery_comparison": 1,
+    "name": "Window history revision",
+    "question": "Is the scoped Window → Sorting chain absent from the corresponding candidate branch?",
+    "baseline": {
+      "label": "Production baseline",
+      "bundle": {
+        "chquery": 1,
+        "sql": "SELECT * FROM 数据.事件",
+        "source": { "kind": "agent-skill" },
+        "query_source": { "sql": "select * from {{ ref('事件') }}", "relationship": { "kind": "declared_compiled_from", "association": "user_attested" } },
+        "collection": { "version": 1, "profile": { "name": "described", "evidence": { "plan": "required", "estimates": "optional", "metadata": "optional", "schema": "enrichment", "pipeline": "optional", "settings": "optional", "runtime": "enrichment" } }, "receipt": { "version": 1, "kind": "plan", "transport": "json", "transformations": [], "deduplicatedCandidates": 0, "roots": 1, "nodes": 4, "fidelity": { "transport": "lossless", "databaseCompleteness": "unverified" }, "descriptions": { "present": 4, "total": 4 }, "attribution": { "namedReads": 1, "anonymousReads": 0, "repeatedNamedReads": 0, "matchedEstimates": 0, "unmatchedEstimates": 0 }, "unknownPlanFields": { "count": 0 }, "optionalEvidence": {}, "nextAction": "collect_estimates" } },
+        "clickhouse": { "version": "26.8" },
+        "settings": { "changed": [{ "name": "max_threads", "value": "8" }] },
+        "schema": [{ "database": "数据", "table": "事件", "engine": "MergeTree" }],
+        "explain": { "plan": [{ "Plan": {
+          "Node Type": "Union",
+          "Description": "review branch",
+          "Plans": [{
+            "Node Type": "Window",
+            "Description": "history window",
+            "Partition By": ["账户"],
+            "Order By": [{ "column": "时间", "direction": "ASC" }],
+            "Frame": "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW",
+            "Plans": [{
+              "Node Type": "Sorting",
+              "Description": "window-required order",
+              "Sort Keys": ["账户", "时间"],
+              "Plans": [{
+                "Node Type": "ReadFromMergeTree",
+                "Description": "demo.events",
+                "Scatter": { "mode": "hash", "keys": ["账户"] },
+                "Join Kind": "LEFT",
+                "Join Strictness": "ALL",
+                "Indexes": [{ "Type": "PrimaryKey", "Condition": "时间 >= now() - INTERVAL 1 DAY", "Keys": ["时间"], "Initial Granules": 32, "Selected Granules": 8 }]
+              }]
+            }]
+          }]
+        }}] }
+      }
+    },
+    "candidate": {
+      "label": "Proposed candidate",
+      "bundle": {
+        "chquery": 1,
+        "sql": "SELECT * FROM 数据.事件",
+        "source": { "kind": "agent-skill" },
+        "query_source": { "sql": "select * from {{ ref('事件') }}", "relationship": { "kind": "declared_compiled_from", "association": "user_attested" } },
+        "collection": { "version": 1, "profile": { "name": "described", "evidence": { "plan": "required", "estimates": "optional", "metadata": "optional", "schema": "enrichment", "pipeline": "optional", "settings": "optional", "runtime": "enrichment" } }, "receipt": { "version": 1, "kind": "plan", "transport": "json", "transformations": [], "deduplicatedCandidates": 0, "roots": 1, "nodes": 2, "fidelity": { "transport": "lossless", "databaseCompleteness": "unverified" }, "descriptions": { "present": 2, "total": 2 }, "attribution": { "namedReads": 1, "anonymousReads": 0, "repeatedNamedReads": 0, "matchedEstimates": 0, "unmatchedEstimates": 0 }, "unknownPlanFields": { "count": 0 }, "optionalEvidence": {}, "nextAction": "collect_estimates" } },
+        "clickhouse": { "version": "26.8" },
+        "settings": { "changed": [{ "name": "max_threads", "value": "8" }] },
+        "schema": [{ "database": "数据", "table": "事件", "engine": "MergeTree" }],
+        "explain": { "plan": [{ "Plan": {
+          "Node Type": "Union",
+          "Description": "review branch",
+          "Plans": [{
+            "Node Type": "ReadFromMergeTree",
+            "Description": "demo.events",
+            "Scatter": { "mode": "hash", "keys": ["账户"] },
+            "Indexes": [{ "Type": "PrimaryKey", "Condition": "时间 >= now() - INTERVAL 1 DAY", "Keys": ["时间"], "Initial Granules": 32, "Selected Granules": 8 }]
+          }]
+        }}] }
+      }
+    },
+    "context": {
+      "claims": [
+        {
+          "id": "scoped-window-chain",
+          "statement": "The supplied baseline Window → Sorting chain is not found in the corresponding candidate branch.",
+          "check_type": "structural-chain-absence",
+          "scope": {
+            "baseline_anchor": { "path": "$[0].Plan", "operator_type": "Union" },
+            "candidate_anchor": { "path": "$[0].Plan", "operator_type": "Union" },
+            "baseline_chain": [
+              { "path": "$[0].Plan.Plans[0]", "operator_type": "Window", "properties": { "Partition By": ["账户"], "Order By": [{ "column": "时间", "direction": "ASC" }], "Frame": "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW" } },
+              { "path": "$[0].Plan.Plans[0].Plans[0]", "operator_type": "Sorting", "properties": { "Sort Keys": ["账户", "时间"] } }
+            ]
+          },
+          "evidence": [{ "role": "baseline", "path": "$[0].Plan.Plans[0]" }, { "role": "candidate", "path": "$[0].Plan" }]
+        },
+        {
+          "id": "author-memory-49",
+          "statement": "The author reports 49% lower memory.",
+          "check_type": "measurement-delta",
+          "scope": { "metric": "memory_usage", "direction": "decrease", "percent": -49 },
+          "evidence": [{ "role": "candidate", "path": "runtime.query_log.memory_usage" }]
+        },
+        {
+          "id": "author-duration-43",
+          "statement": "The author reports 43% shorter duration.",
+          "check_type": "measurement-delta",
+          "scope": { "metric": "query_duration_ms", "direction": "decrease", "percent": -43 },
+          "evidence": [{ "role": "candidate", "path": "runtime.query_log.query_duration_ms" }]
+        }
+      ]
+    }
+}

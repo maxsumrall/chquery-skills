@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chquery.com/contracts/normalization-result.schema.json",
+  "title": "CH Query public normalization result v1",
+  "type": "object",
+  "required": ["value", "receipt", "diagnostics"],
+  "properties": {
+    "value": {},
+    "receipt": {
+      "type": "object",
+      "required": ["version", "kind", "transport", "transformations", "deduplicatedCandidates", "roots", "nodes", "fidelity", "descriptions", "attribution", "unknownPlanFields", "optionalEvidence", "nextAction"],
+      "properties": {
+        "version": { "const": 1 },
+        "kind": { "enum": ["plan", "rows"] },
+        "transport": { "enum": ["object", "text", "json", "clickhouse-json", "clickhouse-json-compact", "json-each-row", "columns-rows", "mcp-structured", "mcp-text", "csv", "tsv"] },
+        "transformations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "deduplicatedCandidates": { "type": "integer", "minimum": 0 },
+        "roots": { "type": "integer", "minimum": 0 },
+        "nodes": { "type": "integer", "minimum": 0 },
+        "fidelity": {
+          "type": "object",
+          "required": ["transport", "databaseCompleteness"],
+          "properties": {
+            "transport": { "const": "lossless" },
+            "databaseCompleteness": { "const": "unverified" }
+          },
+          "additionalProperties": false
+        },
+        "descriptions": {
+          "type": "object",
+          "required": ["present", "total"],
+          "properties": { "present": { "type": "integer", "minimum": 0 }, "total": { "type": "integer", "minimum": 0 } },
+          "additionalProperties": false
+        },
+        "attribution": {
+          "type": "object",
+          "required": ["namedReads", "anonymousReads", "repeatedNamedReads", "matchedEstimates", "unmatchedEstimates"],
+          "properties": {
+            "namedReads": { "type": "integer", "minimum": 0 },
+            "anonymousReads": { "type": "integer", "minimum": 0 },
+            "repeatedNamedReads": { "type": "integer", "minimum": 0 },
+            "matchedEstimates": { "type": "integer", "minimum": 0 },
+            "unmatchedEstimates": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "unknownPlanFields": {
+          "type": "object",
+          "required": ["count"],
+          "properties": { "count": { "type": "integer", "minimum": 0 } },
+          "additionalProperties": false
+        },
+        "optionalEvidence": {
+          "type": "object",
+          "additionalProperties": { "enum": ["collected", "empty", "missing", "omitted", "unsupported", "uncollected"] }
+        },
+        "nextAction": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "diagnostics": { "type": "array", "items": { "$ref": "diagnostic.schema.json" } }
+  },
+  "additionalProperties": false
+}

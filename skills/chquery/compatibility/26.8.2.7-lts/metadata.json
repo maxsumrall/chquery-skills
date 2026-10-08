@@ -1,0 +1,20 @@
+[
+  {
+    "name": "max_threads",
+    "value": "2",
+    "default": "auto(2)",
+    "changed": 1
+  },
+  {
+    "name": "cloud_mode",
+    "value": "0",
+    "default": "0",
+    "changed": 0
+  },
+  {
+    "name": "compatibility",
+    "value": "",
+    "default": "",
+    "changed": 0
+  }
+]

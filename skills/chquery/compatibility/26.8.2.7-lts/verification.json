@@ -1,0 +1,24 @@
+{
+  "version": "26.8.2.7",
+  "checks": [
+    "restricted reader: canonical PLAN TSVRaw and ESTIMATE JSONEachRow",
+    "index-reporting settings unchanged; no diagnostic overrides",
+    "non-MergeTree plan valid with empty optional estimate",
+    "restricted reader: settings default/changed metadata",
+    "required plan denied: ACCESS_DENIED, cannot complete without a plan",
+    "five numeric metrics: exact ID, bounded time, QueryFinish, initial record; wrong ID/window/child filter empty",
+    "reused ID returns two records: reject ambiguous manual association",
+    "optional runtime denied: ACCESS_DENIED, skip without inventing zeros"
+  ],
+  "synthetic_runtime": {
+    "read_rows": 128,
+    "read_bytes": 1024,
+    "result_rows": 1,
+    "memory_usage": 7436569,
+    "query_duration_ms": 1
+  },
+  "tag": "26.8.2.7-lts",
+  "url": "https://github.com/ClickHouse/ClickHouse/releases/download/v26.8.2.7-lts/clickhouse-common-static-26.8.2.7-amd64.tgz",
+  "sha512": "3f0d06f897dda0ffdff8e84dc6b1494611ef9b0b590422fbcf9900a4bac9d16fc0a621327965f8c1edbc8f1d20a8d7d333c88eff999f65cdec4229b91ccb1719",
+  "captured_at": "2026-09-06T09:49:49.883030+00:00"
+}

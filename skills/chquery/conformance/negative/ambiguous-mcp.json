@@ -1,0 +1,4 @@
+{
+  "content": [{ "type": "text", "text": "[{\"Plan\":{\"Node Type\":\"Expression\"}}]" }],
+  "structuredContent": [{ "Plan": { "Node Type": "ReadFromMergeTree" } }]
+}

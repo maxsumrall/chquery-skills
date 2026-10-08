@@ -1,0 +1,12 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Expression",
+      "Description": "Projection with café_日本語 and literal \\n preserved",
+      "Future Field": { "kept": true },
+      "Plans": [
+        { "Node Type": "ReadFromMergeTree", "Description": "Read from demo.events" }
+      ]
+    }
+  }
+]

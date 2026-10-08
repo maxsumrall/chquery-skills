@@ -1,0 +1,12 @@
+{
+  "include": [
+    { "version": "24.9.1.3278", "processorIds": false, "analyze": false, "matches": false },
+    { "version": "24.11.1.2557", "processorIds": true, "analyze": false, "matches": false },
+    { "version": "26.2.19.43", "processorIds": true, "analyze": false, "matches": false },
+    { "version": "26.3.31.5", "processorIds": true, "analyze": false, "matches": false },
+    { "version": "26.4.5.143", "processorIds": true, "analyze": false, "matches": false },
+    { "version": "26.6.4.55", "processorIds": true, "analyze": false, "matches": false },
+    { "version": "26.7.6.57", "processorIds": true, "analyze": true, "matches": false },
+    { "version": "26.8.2.7", "processorIds": true, "analyze": true, "matches": true }
+  ]
+}
